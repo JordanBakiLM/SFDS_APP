@@ -10,7 +10,7 @@ class MqttService {
     client.logging(on: true);
     client.keepAlivePeriod = 45;
     client.onDisconnected = onDisconnected;
-    client.secure = true;
+    client.secure = true; 
   }
 
   Future<void> connect() async {
