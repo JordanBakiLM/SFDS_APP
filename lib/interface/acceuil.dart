@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:sfds_app/interface/configuration/configuration.dart';
+import 'package:sfds_app/interface/hotspot/configurationHotspot.dart';
 import 'package:sfds_app/interface/temp_reel/temp_reel.dart';
 import 'package:sfds_app/main.dart';
 
@@ -65,27 +66,41 @@ class _Acceuil extends State<Acceuil> {
           onTap: (i) => setState(() => currentIndex = i),
           items: <SalomonBottomBarItem>[
             SalomonBottomBarItem(
-                icon: const Icon(
-                  Icons.access_time_outlined,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                title: const Text(
-                  'Temp réel',
-                  style: TextStyle(fontSize: 15, color: Colors.white),
-                ),
-                selectedColor: Couleur.violet3),
+              icon: const Icon(
+                Icons.access_time_outlined,
+                color: Colors.white,
+                size: 30,
+              ),
+              title: const Text(
+                'Temp réel',
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              selectedColor: Couleur.violet3
+            ),
             SalomonBottomBarItem(
-                icon: const Icon(
-                  Icons.settings,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                title: const Text(
-                  'Configuration',
-                  style: TextStyle(fontSize: 15, color: Colors.white),
-                ),
-                selectedColor: Couleur.violet3),
+              icon: const Icon(
+                Icons.settings,
+                color: Colors.white,
+                size: 30,
+              ),
+              title: const Text(
+                'Configuration',
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              selectedColor: Couleur.violet3
+            ),
+            SalomonBottomBarItem(
+              icon: const Icon(
+                Icons.wifi_tethering,
+                color: Colors.white,
+                size: 30,
+              ),
+              title: const Text(
+                'Hotspot',
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+              selectedColor: Couleur.violet3
+            ),
           ],
         ),
         body: Container(
@@ -101,6 +116,8 @@ class _Acceuil extends State<Acceuil> {
         return const TempReel();
       case 1:
         return const Configuration();
+      case 2:
+        return const ConfigurationHotspot();
     }
     return null;
   }

@@ -77,6 +77,9 @@ class _Temperature extends State<Temperature> {
                                   iconSize: 22,
                                   onPressed: () {
                                     editNom(i);
+                                    setState(() {
+                                      nouveauNomTemp.text = labelTemp[i];
+                                    });
                                   },
                                 )
                               ],
@@ -157,10 +160,9 @@ class _Temperature extends State<Temperature> {
       } else {
         retour.add(
           Center(
-            child: Container(
+            child: SizedBox(
               width: 60,
               height: 60,
-              margin: EdgeInsets.only(top: hauteur / 2.5),
               child: CircularProgressIndicator(
                 strokeWidth: 8,
                 color: Couleur.violet1,
@@ -191,7 +193,7 @@ class _Temperature extends State<Temperature> {
                               fontWeight: FontWeight.w800,
                               fontSize: 30)),
                       const TextSpan(
-                          text: ' connecté à votre centrale',
+                          text: ' connecté à votre boitier d\'alarme incendie',
                           style: TextStyle(color: Colors.black, fontSize: 30))
                     ]),
               ),
@@ -201,6 +203,38 @@ class _Temperature extends State<Temperature> {
       }
     }
     return retour;
+  }
+
+  Future<void> alertAjoutNewNom() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Couleur.violet2,
+            content: const Text(
+              'Veuillez remplir tous les champs s\'il vous plait',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+            ),
+            actions: [
+              TextButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Couleur.violet2,
+                    elevation: 0,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Couleur.violet1),
+                  ))
+            ],
+          );
+        });
   }
 
   Future<void> editNom(index) async {
@@ -237,6 +271,9 @@ class _Temperature extends State<Temperature> {
                         nouveauNomTemp.text = '';
                         Navigator.pop(context);
                       });
+                    }else {
+                      Navigator.pop(context);
+                      alertAjoutNewNom();
                     }
                   },
                   child: Text(
@@ -270,7 +307,7 @@ class _Temperature extends State<Temperature> {
     super.initState();
     ServerDistant.centraleOnLine().then(
       (value) {
-        if (value != true) {
+        if (value == true) {
           BaseDeDonne.getNom('capteurTemperature').then((value) {
             int i = 0;
             for (var element in value) {
@@ -363,12 +400,14 @@ class _Temperature extends State<Temperature> {
           )
         ],
       ),
-      body: Scrollbar(
-        thickness: 5,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: loadItem(largeur, hauteur),
+      body: Center(
+        child: Scrollbar(
+          thickness: 5,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: loadItem(largeur, hauteur),
+            ),
           ),
         ),
       ),

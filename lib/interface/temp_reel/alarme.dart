@@ -78,6 +78,9 @@ class _Alarme extends State<Alarme> {
                                 iconSize: 22,
                                 onPressed: () {
                                   editNom(i);
+                                  setState(() {
+                                    nouveauNomTemp.text = labelAlar[i];
+                                  });
                                 },
                               )
                             ],
@@ -122,10 +125,9 @@ class _Alarme extends State<Alarme> {
       } else {
         retour.add(
           Center(
-            child: Container(
+            child: SizedBox(
               width: 60,
               height: 60,
-              margin: EdgeInsets.only(top: hauteur / 2.5),
               child: CircularProgressIndicator(
                 strokeWidth: 8,
                 color: Couleur.violet1,
@@ -155,6 +157,41 @@ class _Alarme extends State<Alarme> {
             ),
             actions: [
               TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Couleur.violet1),
+                  ))
+            ],
+          );
+        });
+  }
+
+  Future<void> alertAjoutNewNom() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Couleur.violet2,
+            content: const Text(
+              'Veuillez remplir tous les champs s\'il vous plait',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.white),
+            ),
+            actions: [
+              TextButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Couleur.violet2,
+                    elevation: 0,
+                  ),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -204,6 +241,9 @@ class _Alarme extends State<Alarme> {
                         nouveauNomTemp.text = '';
                         Navigator.pop(context);
                       });
+                    } else {
+                      Navigator.pop(context);
+                      alertAjoutNewNom();
                     }
                   },
                   child: Text(
@@ -330,12 +370,14 @@ class _Alarme extends State<Alarme> {
           )
         ],
       ),
-      body: Scrollbar(
-        thickness: 5,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: loadItem(largeur, hauteur),
+      body: Center(
+        child: Scrollbar(
+          thickness: 5,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: loadItem(largeur, hauteur),
+            ),
           ),
         ),
       ),

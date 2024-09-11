@@ -14,8 +14,14 @@ class BaseDeDonne {
             'CREATE TABLE capteurGaz(id INTEGER PRIMARY KEY, nom TEXT)');
         await database
             .execute('CREATE TABLE alarme(id INTEGER PRIMARY KEY, nom TEXT)');
+        
         await database.execute(
-            'CREATE TABLE configuration(id INTEGER PRIMARY KEY,tempInter TEXT,tempCriti TEXT,airInter TEXT,airCriti TEXT,indicatif TEXT,numeroUrgence TEXT,autorite TEXT,nomWifi TEXT,passWifi TEXT)');
+            'CREATE TABLE configuration(id INTEGER PRIMARY KEY,tempInter TEXT,tempCriti TEXT,airInter TEXT,airCriti TEXT,indicatif TEXT,numeroUrgence TEXT,autorite TEXT,nomWifi TEXT,passWifi TEXT,nomHotspot TEXT,passHotspot TEXT)');
+
+        await database.execute(
+            'CREATE TABLE adresse(id INTEGER PRIMARY KEY,adresseIP TEXT)');
+
+
 
         await database.rawInsert(
             'INSERT INTO capteurTemperature(nom) VALUES("Detecteur 1")');
@@ -34,9 +40,12 @@ class BaseDeDonne {
         await database.rawInsert('INSERT INTO alarme(nom) VALUES("Alarme 1")');
 
         await database.rawInsert(
-            'INSERT INTO configuration(tempInter,tempCriti,airInter,airCriti,indicatif,numeroUrgence,autorite,nomWifi,passWifi) VALUES("","","","","+237","","","","")');
+            'INSERT INTO configuration(tempInter,tempCriti,airInter,airCriti,indicatif,numeroUrgence,autorite,nomWifi,passWifi,nomHotspot,passHotspot) VALUES("","","","","+237","","","","","","")');
         await database.rawInsert(
-            'INSERT INTO configuration(tempInter,tempCriti,airInter,airCriti,indicatif,numeroUrgence,autorite,nomWifi,passWifi) VALUES("","","","","+237","","","","")');
+            'INSERT INTO configuration(tempInter,tempCriti,airInter,airCriti,indicatif,numeroUrgence,autorite,nomWifi,passWifi,nomHotspot,passHotspot) VALUES("","","","","+237","","","","","","")');
+
+        await database.rawInsert(
+            'INSERT INTO adresse(adresseIP) VALUES("")');
       },
     );
   }
@@ -93,10 +102,29 @@ class BaseDeDonne {
     await editConfig('autorite', map1[0]['autorite'], 2);
     await editConfig('nomWifi', map1[0]['nomWifi'], 2);
     await editConfig('passWifi', map1[0]['passWifi'], 2);
+    await editConfig('nomHotspot', map1[0]['nomHotspot'], 2);
+    await editConfig('passHotspot', map1[0]['passHotspot'], 2);
 
     map2 = await database.rawQuery(
-        'SELECT tempInter,tempCriti,airInter,airCriti,indicatif,numeroUrgence,autorite,nomWifi,passWifi FROM configuration WHERE id = 2');
-
+        'SELECT tempInter,tempCriti,airInter,airCriti,indicatif,numeroUrgence,autorite,nomWifi,passWifi,nomHotspot,passHotspot FROM configuration WHERE id = 2');
+    
     return map2;
   }
+
+  static Future<List> getAdresseIP() async{
+    List<Map<String, dynamic>> map = [];
+
+    Database database =
+        await openDatabase(join(await getDatabasesPath(), 'sfds.bd'));
+    map = await database.rawQuery('SELECT adresseIP FROM adresse WHERE id = 1');
+    return map;
+  }
+
+  static Future<void> setAdresseIP(String adreese) async {
+    Database database =
+        await openDatabase(join(await getDatabasesPath(), 'sfds.bd'));
+    await database.rawUpdate(
+        'UPDATE adresse SET adresseIP = ? WHERE id = 1', [adreese]);
+  }
+
 }

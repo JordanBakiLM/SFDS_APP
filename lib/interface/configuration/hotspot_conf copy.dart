@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:sfds_app/main.dart';
 import 'package:sfds_app/requetes/base_de_donne.dart';
 
-class WifiConfig extends StatefulWidget {
-  const WifiConfig({super.key});
+class HotspotConfig extends StatefulWidget {
+  const HotspotConfig({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _WifiConfig();
+    return _HotspotConfig();
   }
 }
 
-class _WifiConfig extends State<WifiConfig> {
-  TextEditingController nomWifi = TextEditingController();
-  TextEditingController passWifi = TextEditingController();
+class _HotspotConfig extends State<HotspotConfig> {
+  TextEditingController nomHotspot = TextEditingController();
+  TextEditingController passHotspot = TextEditingController();
 
   final FocusNode focusNom = FocusNode();
   final FocusNode focusPass = FocusNode();
@@ -24,24 +24,12 @@ class _WifiConfig extends State<WifiConfig> {
   @override
   void initState() {
     super.initState();
-    BaseDeDonne.getConfig(['nomWifi', 'passWifi']).then((value) {
+    BaseDeDonne.getConfig(['nomHotspot', 'passHotspot']).then((value) {
       setState(() {
-        nomWifi.text = value[0]['nomWifi'];
-        passWifi.text = value[0]['passWifi'];
+        nomHotspot.text = value[0]['nomHotspot'];
+        passHotspot.text = value[0]['passHotspot'];
       });
     });
-
-    // focusNom.addListener(() {
-    //   setState(() {
-    //     eleNom = focusNom.hasFocus ? 5 : 0;
-    //   });
-    // });
-
-    // focusPass.addListener(() {
-    //   setState(() {
-    //     elePass = focusPass.hasFocus ? 5 : 0;
-    //   });
-    // });
 
     focusNom.addListener(() {
       if (focusNom.hasFocus == true) {
@@ -100,14 +88,14 @@ class _WifiConfig extends State<WifiConfig> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Wifi',
+                    'Hotspot',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 28,
                         fontWeight: FontWeight.w700),
                   ),
                   Icon(
-                    Icons.wifi,
+                    Icons.wifi_tethering,
                     size: 35,
                     color: Colors.white,
                   )
@@ -116,7 +104,7 @@ class _WifiConfig extends State<WifiConfig> {
               Container(
                 margin: const EdgeInsets.only(top: 10),
                 child: const Text(
-                  'Configurez votre SSID et votre mot de passe pour connecter le boitier d\'alarme incendie à internet',
+                  'Configurez le SSID et le mot de passe pour vous connecter au boitier d\'alarme incendie',
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 15,
@@ -144,7 +132,7 @@ class _WifiConfig extends State<WifiConfig> {
                         borderRadius: BorderRadius.circular(10),
                         shadowColor: const Color.fromARGB(255, 82, 79, 79),
                         child: TextField(
-                          controller: nomWifi,
+                          controller: nomHotspot,
                           focusNode: focusNom,
                           style: const TextStyle(fontSize: 18),
                           decoration: InputDecoration(
@@ -169,10 +157,10 @@ class _WifiConfig extends State<WifiConfig> {
                           onChanged: (value) {
                             if (value == " ") {
                               setState(() {
-                                nomWifi.text = "";
+                                nomHotspot.text = "";
                               });
                             }
-                            BaseDeDonne.editConfig('nomWifi', nomWifi.text, 1);
+                            BaseDeDonne.editConfig('nomHotspot', nomHotspot.text, 1);
                           },
                         ),
                       ),
@@ -194,7 +182,7 @@ class _WifiConfig extends State<WifiConfig> {
                           borderRadius: BorderRadius.circular(10),
                           shadowColor: const Color.fromARGB(255, 82, 79, 79),
                           child: TextField(
-                            controller: passWifi,
+                            controller: passHotspot,
                             focusNode: focusPass,
                             style: const TextStyle(fontSize: 18),
                             decoration: InputDecoration(
@@ -219,10 +207,10 @@ class _WifiConfig extends State<WifiConfig> {
                             onChanged: (value) {
                               if (value == " ") {
                                 setState(() {
-                                  passWifi.text = "";
+                                  passHotspot.text = "";
                                 });
                               }
-                              BaseDeDonne.editConfig('passWifi', passWifi.text, 1);
+                              BaseDeDonne.editConfig('passHotspot', passHotspot.text, 1);
                             },
                           ),
                         ),
