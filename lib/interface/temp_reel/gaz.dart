@@ -1,10 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:mqtt_client/mqtt_client.dart';
 import 'package:sfds_app/interface/erreur_connexion.dart';
 import 'package:sfds_app/main.dart';
 import 'package:sfds_app/requetes/base_de_donne.dart';
 import 'package:sfds_app/requetes/server_distant_http.dart';
-import 'package:sfds_app/requetes/server_distant_mqtt.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class Gaz extends StatefulWidget {
@@ -23,7 +23,7 @@ class _Gaz extends State<Gaz> {
   bool fin = false;
   bool connect = true;
 
-  late MqttService mqttService;
+  Timer? timer;
 
   String espacementChiffre(int ch) {
     String numberString = ch.toString();
@@ -48,10 +48,11 @@ class _Gaz extends State<Gaz> {
           if (valGaz[i] != 99999) {
             retour.add(Container(
               margin: EdgeInsets.only(
-                  top: 25,
-                  bottom: 25,
-                  left: (largeur - (largeur / 1.1)) / 2,
-                  right: (largeur - (largeur / 1.1)) / 2),
+                top: 25,
+                bottom: 25,
+                left: (largeur - (largeur / 1.1)) / 2,
+                right: (largeur - (largeur / 1.1)) / 2
+              ),
               child: Material(
                 color: Couleur.violet2,
                 borderRadius: BorderRadius.circular(25),
@@ -175,13 +176,16 @@ class _Gaz extends State<Gaz> {
       } else {
         retour.add(
           Center(
-            child: SizedBox(
-              width: 60,
-              height: 60,
-              child: CircularProgressIndicator(
-                strokeWidth: 8,
-                color: Couleur.violet1,
-                backgroundColor: Couleur.violet2,
+            child: Container(
+              padding: EdgeInsets.only(top: hauteur/2 - 100),
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: CircularProgressIndicator(
+                  strokeWidth: 8,
+                  color: Couleur.violet1,
+                  backgroundColor: Couleur.violet2,
+                ),
               ),
             ),
           ),
@@ -322,7 +326,7 @@ class _Gaz extends State<Gaz> {
   void initState() {
     super.initState();
     ServerDistant.centraleOnLine().then((value) {
-      if (value == true) {
+      if (value != true) {
         BaseDeDonne.getNom('capteurGaz').then((value) {
           int i = 0;
           for (var element in value) {
@@ -331,6 +335,7 @@ class _Gaz extends State<Gaz> {
             });
             i++;
           }
+          startTimer();
         });
 
         ServerDistant.getValeur('V2').then(
@@ -346,33 +351,6 @@ class _Gaz extends State<Gaz> {
             });
           },
         );
-
-        mqttService = MqttService();
-        mqttService.connect().then(
-          (value) {
-            mqttService.client.connectionMessage = MqttConnectMessage()
-                .withClientIdentifier('sfds-clent_mqtt')
-                .withWillQos(MqttQos.atLeastOnce);
-            mqttService.client.subscribe('downlink/ds/Gaz', MqttQos.atMostOnce);
-            mqttService.client.updates!
-                .listen((List<MqttReceivedMessage<MqttMessage>> c) {
-              final MqttPublishMessage message =
-                  c[0].payload as MqttPublishMessage;
-              final payload = MqttPublishPayload.bytesToStringAsString(
-                  message.payload.message);
-
-              List<String> temp = payload.split(' ');
-              int i = 0;
-              setState(() {
-                for (var element in temp) {
-                  valGaz[i] = int.parse(element.toString());
-                  i++;
-                }
-                fin = true;
-              });
-            });
-          },
-        );
       } else {
         setState(() {
           connect = false;
@@ -381,11 +359,29 @@ class _Gaz extends State<Gaz> {
     });
   }
 
+  void startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      ServerDistant.getValeur('V2').then(
+        (value) {
+          List<String> temp = value.split(' ');
+          int i = 0;
+          if (mounted){
+            setState(() {
+              for (var element in temp) {
+                valGaz[i] = int.parse(element.toString());
+                i++;
+              }
+              fin = true;
+            });
+          }
+        },
+      );
+    });
+  }
+
   @override
   void dispose() {
-    try {
-      mqttService.disConnect();
-    } catch (e) {}
+    timer?.cancel();
     super.dispose();
   }
 
@@ -413,15 +409,10 @@ class _Gaz extends State<Gaz> {
           )
         ],
       ),
-      body: Center(
-        child: Scrollbar(
-          thickness: 5,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: loadItem(largeur, hauteur),
-            ),
-          ),
+      body: SingleChildScrollView(
+        child:  Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: loadItem(largeur, hauteur),
         ),
       ),
     );

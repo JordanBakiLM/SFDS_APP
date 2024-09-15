@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sfds_app/interface/acceuil.dart';
 import 'package:sfds_app/interface/splashscreen.dart';
 import 'package:sfds_app/requetes/base_de_donne.dart';
-// import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
   runApp(const MyApp());
   BaseDeDonne.create();
 

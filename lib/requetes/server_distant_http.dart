@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -5,7 +6,6 @@ class ServerDistant {
   static String tokenBlynk = "AvZvPy6gsRzr1-61fF9rkJlF4vwfIeJ9";
 
   static String host = 'https://blynk.cloud/external/api/';
-  // static String hostWS = 'ws://192.168.1.101:8000/ws/';
 
   static Future<dynamic> centraleOnLine() async {
     try {

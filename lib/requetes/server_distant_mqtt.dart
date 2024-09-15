@@ -3,7 +3,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 
 class MqttService {
   final String tokenBlynk = "AvZvPy6gsRzr1-61fF9rkJlF4vwfIeJ9";
-  MqttServerClient client = MqttServerClient('blynk.cloud', 'sfds-clent_mqtt');
+  MqttServerClient client = MqttServerClient('ny3.blynk.cloud', 'sfds-clent_mqtt');
 
   MqttService() { 
     client.port = 8883; //1883 8883

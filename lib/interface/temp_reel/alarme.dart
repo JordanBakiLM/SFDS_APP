@@ -1,12 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:mqtt_client/mqtt_client.dart';
 import 'package:sfds_app/interface/erreur_connexion.dart';
 import 'package:sfds_app/main.dart';
 import 'package:sfds_app/requetes/base_de_donne.dart';
 import 'package:sfds_app/requetes/server_distant_http.dart';
-import 'package:sfds_app/requetes/server_distant_mqtt.dart';
-
-// Visibility gestion des choses manquantes
 
 class Alarme extends StatefulWidget {
   const Alarme({super.key});
@@ -25,7 +23,7 @@ class _Alarme extends State<Alarme> {
   bool fin = false;
   bool connect = true;
 
-  late MqttService mqttService;
+  Timer? timer;
 
   List<Widget> loadItem(double largeur, hauteur) {
     List<Widget> retour = [];
@@ -125,13 +123,16 @@ class _Alarme extends State<Alarme> {
       } else {
         retour.add(
           Center(
-            child: SizedBox(
-              width: 60,
-              height: 60,
-              child: CircularProgressIndicator(
-                strokeWidth: 8,
-                color: Couleur.violet1,
-                backgroundColor: Couleur.violet2,
+            child: Container(
+              padding: EdgeInsets.only(top: hauteur/2 - 100),
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: CircularProgressIndicator(
+                  strokeWidth: 8,
+                  color: Couleur.violet1,
+                  backgroundColor: Couleur.violet2,
+                ),
               ),
             ),
           ),
@@ -276,7 +277,7 @@ class _Alarme extends State<Alarme> {
   void initState() {
     super.initState();
     ServerDistant.centraleOnLine().then((value) {
-      if (value == true) {
+      if (value != true) {
         BaseDeDonne.getNom('alarme').then((value) {
           int i = 0;
           for (var element in value) {
@@ -285,6 +286,7 @@ class _Alarme extends State<Alarme> {
             });
             i++;
           }
+          startTimer();
         });
 
         ServerDistant.getValeur('V0').then(
@@ -301,35 +303,6 @@ class _Alarme extends State<Alarme> {
             });
           },
         );
-
-        mqttService = MqttService();
-        mqttService.connect().then(
-          (value) {
-            mqttService.client.connectionMessage = MqttConnectMessage()
-                .withClientIdentifier('sfds-clent_mqtt')
-                .withWillQos(MqttQos.atLeastOnce);
-            mqttService.client
-                .subscribe('downlink/ds/Alarme', MqttQos.atMostOnce);
-            mqttService.client.updates!
-                .listen((List<MqttReceivedMessage<MqttMessage>> c) {
-              final MqttPublishMessage message =
-                  c[0].payload as MqttPublishMessage;
-              final payload = MqttPublishPayload.bytesToStringAsString(
-                  message.payload.message);
-
-              setState(() {
-                if (int.parse(payload.toString()) == 1) {
-                  valAlar[0] = 'Allumée';
-                  isSwitch[0] = true;
-                } else {
-                  valAlar[0] = 'Eteinte';
-                  isSwitch[0] = false;
-                }
-                fin = true;
-              });
-            });
-          },
-        );
       } else {
         setState(() {
           connect = false;
@@ -338,11 +311,28 @@ class _Alarme extends State<Alarme> {
     });
   }
 
+  void startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      ServerDistant.getValeur('V0').then(
+        (value) {
+          setState(() {
+            if (int.parse(value.toString()) == 1) {
+              valAlar[0] = 'Allumée';
+              isSwitch[0] = true;
+            } else {
+              valAlar[0] = 'Eteinte';
+              isSwitch[0] = false;
+            }
+            fin = true;
+          });
+        },
+      );
+    });
+  }
+
   @override
   void dispose() {
-    try {
-      mqttService.disConnect();
-    } catch (e) {}
+    timer?.cancel();
     super.dispose();
   }
 
@@ -370,14 +360,12 @@ class _Alarme extends State<Alarme> {
           )
         ],
       ),
-      body: Center(
-        child: Scrollbar(
-          thickness: 5,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: loadItem(largeur, hauteur),
-            ),
+      body: Scrollbar(
+        thickness: 5,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: loadItem(largeur, hauteur),
           ),
         ),
       ),
