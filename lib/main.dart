@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sfds_app/interface/acceuil.dart';
 import 'package:sfds_app/interface/splashscreen.dart';
 import 'package:sfds_app/requetes/base_de_donne.dart';
 
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Acceuil(),
+      home: Splashscreen(),
     );
   }
 }

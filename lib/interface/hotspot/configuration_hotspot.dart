@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sfds_app/main.dart';
 import 'package:sfds_app/requetes/base_de_donne.dart';
 
@@ -30,12 +29,14 @@ class _ConfigurationHotspot extends State<ConfigurationHotspot> {
       (value) {
         String adr = value[0]['adresseIP'].toString();
         List<String> part = adr.split('.');
-        setState(() {
-          part1.text = part[0];
-          part2.text = part[1];
-          part3.text = part[2];
-          part4.text = part[3];
-        });
+        if (part.length == 4){
+          setState(() {
+            part1.text = part[0];
+            part2.text = part[1];
+            part3.text = part[2];
+            part4.text = part[3];
+          });
+        }
       },
     );
   }
@@ -47,14 +48,14 @@ class _ConfigurationHotspot extends State<ConfigurationHotspot> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.only(top: 50, left: 50, right: 50),
+              padding: const EdgeInsets.only(top: 30, left: 50, right: 50),
               color: Colors.transparent,
               child: Image.asset(
                 'assets/images/local.png',
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 60, left: 20, right: 20),
+              margin: const EdgeInsets.only(top: 40, left: 20, right: 20),
               child: Center(
                 child: RichText(
                   textAlign: TextAlign.center,
@@ -68,17 +69,37 @@ class _ConfigurationHotspot extends State<ConfigurationHotspot> {
                       ),
                       children: <TextSpan>[
                         TextSpan(
-                            text: 'boitier d\'alarme incendie',
-                            style: TextStyle(
-                                color: Couleur.violet1,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900))
+                          text: 'boitier d\'alarme incendie',
+                          style: TextStyle(
+                            color: Couleur.violet1,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w900
+                          )
+                        ),
                       ]),
                 ),
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 60, left: 20, right: 20),
+              margin: const EdgeInsets.only(top: 10),
+              child: Center(
+                child: TextButton(
+                  onPressed: () { 
+                    print('svxann');
+                  },
+                  child: Text(
+                    'Scanner le Qr code',
+                    style: TextStyle(
+                      color: Couleur.violet4,
+                      fontSize: 18
+                    ),
+                  ),
+                  
+                )
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 40, left: 20, right: 20),
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,9 +162,9 @@ class _ConfigurationHotspot extends State<ConfigurationHotspot> {
                         },
                       ),
                     ),
-                    const Text(
-                      '.',
-                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    Image.asset(
+                      'assets/images/dot.png',
+                      width: 5,
                     ),
                     SizedBox(
                       width: 60,
@@ -203,9 +224,9 @@ class _ConfigurationHotspot extends State<ConfigurationHotspot> {
                         },
                       ),
                     ),
-                    const Text(
-                      '.',
-                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    Image.asset(
+                      'assets/images/dot.png',
+                      width: 5,
                     ),
                     SizedBox(
                       width: 60,
@@ -265,9 +286,9 @@ class _ConfigurationHotspot extends State<ConfigurationHotspot> {
                         },
                       ),
                     ),
-                    const Text(
-                      '.',
-                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    Image.asset(
+                      'assets/images/dot.png',
+                      width: 5,
                     ),
                     SizedBox(
                       width: 60,

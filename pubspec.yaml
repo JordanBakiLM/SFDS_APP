@@ -37,18 +37,12 @@ dependencies:
   cupertino_icons: ^1.0.6
 
   salomon_bottom_bar: ^3.3.2
-
   country_code_picker: ^3.0.0
-
   syncfusion_flutter_gauges: ^26.2.7
   sqflite: ^2.3.3+1
   path: ^1.9.0
-
   http: ^1.2.2
-  mqtt_client: ^10.3.0
   web_socket_channel: ^3.0.1
-
-  qr_code_scanner: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +85,7 @@ flutter:
     - assets/images/ventN.png
     - assets/images/ventB.png
     - assets/images/local.png
+    - assets/images/dot.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

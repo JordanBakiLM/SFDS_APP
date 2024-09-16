@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sfds_app/interface/configuration/air_conf.dart';
 import 'package:sfds_app/interface/configuration/contact_conf.dart';
-import 'package:sfds_app/interface/configuration/hotspot_conf%20copy.dart';
 import 'package:sfds_app/interface/configuration/temp_conf.dart';
 import 'package:sfds_app/interface/configuration/wifi_conf.dart';
 import 'package:sfds_app/interface/hotspot/erreur_connexion2.dart';
@@ -69,7 +68,6 @@ class _Configuration extends State<Configuration> {
       const AirConfig(),
       const ContactConfig(),
       const WifiConfig(),
-      const HotspotConfig(),
       Container(
         margin: const EdgeInsets.only(top: 10, bottom: 30),
         child: Center(

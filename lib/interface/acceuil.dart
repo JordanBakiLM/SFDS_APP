@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:sfds_app/interface/configuration/configuration.dart';
-import 'package:sfds_app/interface/hotspot/configurationHotspot.dart';
+import 'package:sfds_app/interface/hotspot/configuration_hotspot.dart';
 import 'package:sfds_app/interface/temp_reel/temp_reel.dart';
 import 'package:sfds_app/main.dart';
 
