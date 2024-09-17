@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -21,12 +22,14 @@ class Configuration extends StatefulWidget {
 
 class _Configuration extends State<Configuration> {
   late WebSocketChannel client;
-  late String adresseIP;
+  String adresseIP = "";
 
   late List<Widget> containerOK;
   late List<Widget> containerConn;
   late List<Widget> containerErreur;
   late List<Widget> containerAffiche;
+
+  bool con = false;
 
   Future<void> configOK() async {
     return showDialog(
@@ -145,29 +148,77 @@ class _Configuration extends State<Configuration> {
         setState(() {
           adresseIP = value[0]['adresseIP'].toString();
         });
+        if (adresseIP == ""){
+          setState(() {
+            containerAffiche = containerErreur;
+          });
+        }
+        else{
+          try {
+            client = WebSocketChannel.connect(Uri.parse('ws://$adresseIP/ws'));
+
+            tim();
+
+            setState(() {
+              containerAffiche = containerOK;
+            });
+
+            client.stream.listen(
+              (message) {
+                if (message == 'ok'){
+                  con = true;
+                }
+                else{
+                  configOK();
+                }
+              },
+              onDone: () {
+                print('connexion lost');
+              },
+            );
+
+          } catch (e) {
+            setState(() {
+              containerAffiche = containerErreur;
+            });
+          }
+
+        }
       },
     );
 
-    try {
-      client = WebSocketChannel.connect(Uri.parse('ws://$adresseIP/ws'));
+    // try {
+    //   client = WebSocketChannel.connect(Uri.parse('ws://$adresseIP/ws'));
 
-      setState(() {
-        containerAffiche = containerOK;
-      });
+    //   setState(() {
+    //     containerAffiche = containerOK;
+    //   });
 
-      client.stream.listen(
-        (message) {
-          configOK();
-        },
-        onDone: () {
-          print('connexion lost');
-        },
-      );
-    } catch (e) {
-      setState(() {
-        containerAffiche = containerErreur;
-      });
-    }
+    //   client.stream.listen(
+    //     (message) {
+    //       configOK();
+    //     },
+    //     onDone: () {
+    //       print('connexion lost');
+    //     },
+    //   );
+
+    // } catch (e) {
+    //   setState(() {
+    //     containerAffiche = containerErreur;
+    //   });
+    // }
+  }
+
+  Future<void> tim() async {
+    Timer(const Duration(seconds: 7), () {
+      if(con == false){
+        client.sink.close();
+        setState(() {
+          containerAffiche = containerErreur;
+        });
+      }
+    });
   }
 
   @override
@@ -232,7 +283,7 @@ class _Configuration extends State<Configuration> {
     FocusScope.of(context).unfocus();
     BaseDeDonne.setConfig().then(
       (value) {
-        client.sink.add(jsonEncode(value[0].toString()));
+        client.sink.add(jsonEncode(value[0]));
       },
     );
   }

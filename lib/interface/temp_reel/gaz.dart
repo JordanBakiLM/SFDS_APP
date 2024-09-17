@@ -326,7 +326,7 @@ class _Gaz extends State<Gaz> {
   void initState() {
     super.initState();
     ServerDistant.centraleOnLine().then((value) {
-      if (value != true) {
+      if (value == true) {
         BaseDeDonne.getNom('capteurGaz').then((value) {
           int i = 0;
           for (var element in value) {

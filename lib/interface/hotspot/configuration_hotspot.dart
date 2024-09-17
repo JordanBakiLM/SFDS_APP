@@ -81,24 +81,6 @@ class _ConfigurationHotspot extends State<ConfigurationHotspot> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 10),
-              child: Center(
-                child: TextButton(
-                  onPressed: () { 
-                    print('svxann');
-                  },
-                  child: Text(
-                    'Scanner le Qr code',
-                    style: TextStyle(
-                      color: Couleur.violet4,
-                      fontSize: 18
-                    ),
-                  ),
-                  
-                )
-              ),
-            ),
-            Container(
               margin: const EdgeInsets.only(top: 40, left: 20, right: 20),
               child: Center(
                 child: Row(
